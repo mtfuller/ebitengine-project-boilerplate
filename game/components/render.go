@@ -1,16 +1,16 @@
 package components
 
 import (
-	"github.com/yourname/yourgame/engine"
+	"github.com/yourname/yourgame/framework"
 )
 
 type Render struct {
-	Spritesheet *engine.Spritesheet
-	CurrentSprite string
+	Spritesheet  framework.Spritesheet
+	EntityName   string
+	SpriteName   string
 	CurrentFrame int
-	MaxCountdown int
-	Countdown int
-	Z int
+	FrameCount   int
+	Z            int
 }
 
 func (r Render) GetName() string {

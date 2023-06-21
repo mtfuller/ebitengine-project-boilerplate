@@ -1,13 +1,13 @@
-package engine
+package framework
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/yourname/yourgame/engine/ecs"
+	"github.com/yourname/yourgame/framework/ecs"
 )
 
 type StateManager struct {
-	boards    		map[*ecs.Board]struct{}
-	currentBoard	*ecs.Board
+	boards       map[*ecs.Board]struct{}
+	currentBoard *ecs.Board
 }
 
 func (s *StateManager) AddBoard(b *ecs.Board) {

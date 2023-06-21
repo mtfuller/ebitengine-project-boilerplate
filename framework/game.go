@@ -1,11 +1,11 @@
-package engine
+package framework
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Game struct {
-	stateManager	*StateManager
+	stateManager *StateManager
 }
 
 func (g *Game) SetStateManager(s *StateManager) {

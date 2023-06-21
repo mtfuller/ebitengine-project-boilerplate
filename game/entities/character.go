@@ -1,49 +1,50 @@
 package entities
 
 import (
-	"github.com/yourname/yourgame/engine/ecs"
+	"github.com/yourname/yourgame/framework/ecs"
 	"github.com/yourname/yourgame/game/components"
-	"github.com/yourname/yourgame/game/loaders"
 )
 
-func NewCharacter() ecs.Entity {
+func NewCharacter(x int, y int) ecs.Entity {
 	myEntity := ecs.NewEntity()
 
-	myEntity.AddComponent(&components.Input{
+	myEntity.SetComponent(&components.Input{
 		Enabled: true,
 	})
 
-	myEntity.AddComponent(&components.Position{
-		X: 100,
-		Y: 100,
+	myEntity.SetComponent(&components.Position{
+		X: float64(x),
+		Y: float64(y),
 	})
 
-	myEntity.AddComponent(&components.Size{
-		W: 32,
-		H: 32,
+	myEntity.SetComponent(&components.Size{
+		OffsetX: 0,
+		OffsetY: 0,
+		W:       32,
+		H:       32,
 	})
 
-	myEntity.AddComponent(&components.Gravity{
+	myEntity.SetComponent(&components.Gravity{
 		Enabled: true,
 	})
 
-	myEntity.AddComponent(&components.Collision{
+	myEntity.SetComponent(&components.Collision{
 		Enabled: true,
 	})
 
-	myEntity.AddComponent(&components.Velocity{
+	myEntity.SetComponent(&components.Velocity{
 		VX: 0,
 		VY: 0,
 	})
-	
-	myEntity.AddComponent(&components.Render{
-		Spritesheet: loaders.Player,
-		CurrentSprite: "test",
-		CurrentFrame: 1,
-		MaxCountdown: 20,
-		Countdown: 20,
-		Z: 1,
-	})
+
+	// myEntity.SetComponent(&components.Render{
+	// 	Spritesheet: ,
+	// 	CurrentSprite: "test",
+	// 	CurrentFrame:  1,
+	// 	MaxCountdown:  20,
+	// 	Countdown:     20,
+	// 	Z:             1,
+	// })
 
 	return myEntity
 }

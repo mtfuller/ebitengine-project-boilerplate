@@ -22,3 +22,7 @@ go.work
 
 # MacOS
 .DS_Store
+
+# Tiled
+*.tiled-project
+*.tiled-session

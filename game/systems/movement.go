@@ -3,18 +3,17 @@ package systems
 import (
 	//"fmt"
 	"github.com/solarlune/resolv"
-	"github.com/yourname/yourgame/engine/ecs"
+	"github.com/yourname/yourgame/framework/ecs"
 	"github.com/yourname/yourgame/game/components"
 )
 
 type Movement struct {
 	ecs.BaseSystem
-	collisionSpace *resolv.Space
+	collisionSpace   *resolv.Space
 	collisionObjects map[*ecs.Entity]*resolv.Object
-
 }
 
-func (m *Movement) AddEntity(e *ecs.Entity)  {
+func (m *Movement) AddEntity(e *ecs.Entity) {
 	if m.Entities == nil {
 		m.Entities = make(map[*ecs.Entity]struct{})
 	}
@@ -39,8 +38,8 @@ func (m *Movement) AddEntity(e *ecs.Entity)  {
 	collision, ok := component.(*components.Collision)
 
 	if ok && collision.Enabled {
-		x := position.X
-		y := position.Y
+		x := position.X + float64(size.OffsetX)
+		y := position.Y + float64(size.OffsetY)
 		w := size.W
 		h := size.H
 
@@ -52,9 +51,9 @@ func (m *Movement) AddEntity(e *ecs.Entity)  {
 	}
 }
 
-func (m Movement) Update()  {
+func (m Movement) Update() {
 	for ptr, _ := range m.Entities {
-		e := *ptr;
+		e := *ptr
 
 		component := e.GetComponent("position")
 		position, ok := component.(*components.Position)

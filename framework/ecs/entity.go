@@ -1,22 +1,20 @@
 package ecs
 
-import (
-	//"fmt"
-)
+//"fmt"
 
 type Entity struct {
 	components map[string]interface{}
 }
 
 func NewEntity() Entity {
-	return Entity {components: make(map[string]interface{})}
+	return Entity{components: make(map[string]interface{})}
 }
 
 func (e Entity) GetComponent(name string) interface{} {
 	return e.components[name]
 }
 
-func (e Entity) HasAllComponents(names []string) bool  {
+func (e Entity) HasAllComponents(names []string) bool {
 	hasAllComponents := true
 
 	for _, element := range names {
@@ -31,6 +29,6 @@ func (e Entity) HasAllComponents(names []string) bool  {
 	return hasAllComponents
 }
 
-func (e *Entity) AddComponent(c Component) {
+func (e *Entity) SetComponent(c Component) {
 	e.components[c.GetName()] = c
 }

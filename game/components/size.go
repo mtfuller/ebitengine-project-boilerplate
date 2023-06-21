@@ -1,7 +1,7 @@
 package components
 
 type Size struct {
-	W, H int
+	OffsetX, OffsetY, W, H int
 }
 
 func (s Size) GetName() string {
