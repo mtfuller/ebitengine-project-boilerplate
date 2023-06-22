@@ -11,6 +11,10 @@ type Input struct {
 	ecs.BaseSystem
 }
 
+func (i Input) GetName() string {
+	return "System::Input"
+}
+
 func (i Input) Update() {
 	for ptr, _ := range i.Entities {
 		e := *ptr

@@ -23,6 +23,10 @@ func NewRender() *Render {
 	return &render
 }
 
+func (r Render) GetName() string {
+	return "System::Render"
+}
+
 func (b *Render) AddEntity(e *ecs.Entity) {
 	if b.Entities == nil {
 		b.Entities = make(map[*ecs.Entity]struct{})

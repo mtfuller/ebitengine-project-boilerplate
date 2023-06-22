@@ -1,11 +1,8 @@
 package boards
 
 import (
-	"fmt"
-
 	"github.com/yourname/yourgame/framework"
 	"github.com/yourname/yourgame/framework/ecs"
-	"github.com/yourname/yourgame/game/components"
 	"github.com/yourname/yourgame/game/entities"
 	"github.com/yourname/yourgame/game/systems"
 )
@@ -14,8 +11,12 @@ func NewPlatformer() ecs.Board {
 	b := ecs.Board{}
 
 	renderSystem := systems.NewRender()
-	movementSystem := systems.Movement{}
-	inputSystem := systems.Input{}
+	movementSystem := &systems.Movement{}
+	inputSystem := &systems.Input{}
+
+	b.SetRenderer(renderSystem)
+	b.AddSystem(movementSystem)
+	b.AddSystem(inputSystem)
 
 	const tilemapFilepath = "assets/tilemaps/platformer.tmx"
 
@@ -24,70 +25,22 @@ func NewPlatformer() ecs.Board {
 		panic(err)
 	}
 
-	tiles := boardmap.GetAllTiles()
+	boardEntities := boardmap.GetAllEntities()
 
-	for _, tile := range tiles {
-		switch tile.Type {
+	for _, boardEntity := range boardEntities {
+		switch boardEntity.Type {
 		case "WALL":
-			e := entities.NewWall(tile.X, tile.Y)
-
-			e.SetComponent(&components.Size{
-				OffsetX: 0,
-				OffsetY: 0,
-				W:       tile.W,
-				H:       tile.H,
-			})
-
-			e.SetComponent(&components.Render{
-				Spritesheet:  *tile.Spritesheet,
-				EntityName:   "WALL",
-				SpriteName:   tile.SpriteName,
-				CurrentFrame: 0,
-				FrameCount:   0,
-				Z:            1,
-			})
-
+			e := entities.NewWall(boardEntity)
 			movementSystem.AddEntity(&e)
 			renderSystem.AddEntity(&e)
-		default:
-		}
-	}
-
-	objects := boardmap.GetAllObjects()
-
-	for _, obj := range objects {
-		switch obj.Type {
 		case "CHAR1":
-			e := entities.NewCharacter(10, 10)
-
-			e.SetComponent(&components.Size{
-				OffsetX: 16,
-				OffsetY: 6,
-				W:       6,
-				H:       18,
-			})
-
-			e.SetComponent(&components.Render{
-				Spritesheet:  *obj.Spritesheet,
-				EntityName:   "CHAR1",
-				SpriteName:   "0",
-				CurrentFrame: 0,
-				FrameCount:   0,
-				Z:            2,
-			})
-
+			e := entities.NewCharacter(boardEntity)
 			movementSystem.AddEntity(&e)
 			inputSystem.AddEntity(&e)
 			renderSystem.AddEntity(&e)
 		default:
 		}
 	}
-
-	fmt.Println(objects)
-
-	b.SetRenderer(renderSystem)
-	b.AddSystem(movementSystem)
-	b.AddSystem(inputSystem)
 
 	return b
 }

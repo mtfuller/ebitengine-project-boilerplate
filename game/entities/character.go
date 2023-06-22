@@ -1,11 +1,12 @@
 package entities
 
 import (
+	"github.com/yourname/yourgame/framework"
 	"github.com/yourname/yourgame/framework/ecs"
 	"github.com/yourname/yourgame/game/components"
 )
 
-func NewCharacter(x int, y int) ecs.Entity {
+func NewCharacter(boardEntity framework.BoardMapEntity) ecs.Entity {
 	myEntity := ecs.NewEntity()
 
 	myEntity.SetComponent(&components.Input{
@@ -13,15 +14,15 @@ func NewCharacter(x int, y int) ecs.Entity {
 	})
 
 	myEntity.SetComponent(&components.Position{
-		X: float64(x),
-		Y: float64(y),
+		X: float64(boardEntity.X),
+		Y: float64(10),
 	})
 
 	myEntity.SetComponent(&components.Size{
-		OffsetX: 0,
-		OffsetY: 0,
-		W:       32,
-		H:       32,
+		OffsetX: 16,
+		OffsetY: 6,
+		W:       6,
+		H:       18,
 	})
 
 	myEntity.SetComponent(&components.Gravity{
@@ -37,14 +38,14 @@ func NewCharacter(x int, y int) ecs.Entity {
 		VY: 0,
 	})
 
-	// myEntity.SetComponent(&components.Render{
-	// 	Spritesheet: ,
-	// 	CurrentSprite: "test",
-	// 	CurrentFrame:  1,
-	// 	MaxCountdown:  20,
-	// 	Countdown:     20,
-	// 	Z:             1,
-	// })
+	myEntity.SetComponent(&components.Render{
+		Spritesheet:  *boardEntity.Spritesheet,
+		EntityName:   "CHAR1",
+		SpriteName:   "0",
+		CurrentFrame: 0,
+		FrameCount:   0,
+		Z:            2,
+	})
 
 	return myEntity
 }

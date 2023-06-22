@@ -5,9 +5,9 @@ import (
 )
 
 type Board struct {
-	entities    map[*Entity]struct{}
-	systems		[]ISystem
-	renderer 	IRenderableSystem
+	entities map[*Entity]struct{}
+	systems  []ISystem
+	renderer IRenderableSystem
 }
 
 func (b *Board) AddEntity(e *Entity) {

@@ -13,7 +13,7 @@ type BoardMap struct {
 	gidToSpritesheetMap map[uint32]*Spritesheet
 }
 
-type BoardMapTile struct {
+type BoardMapEntity struct {
 	Type        string
 	Spritesheet *Spritesheet
 	SpriteName  string
@@ -46,8 +46,15 @@ func LoadBoardMapFromTilemap(tilemapFilepath string) (BoardMap, error) {
 	}, nil
 }
 
-func (b BoardMap) GetAllTiles() []BoardMapTile {
-	tiles := []BoardMapTile{}
+func (b BoardMap) GetAllEntities() []BoardMapEntity {
+	tiles := b.getAllTiles()
+	objects := b.getAllObjects()
+
+	return append(tiles, objects...)
+}
+
+func (b BoardMap) getAllTiles() []BoardMapEntity {
+	tiles := []BoardMapEntity{}
 
 	for row := 0; row < b.tilemap.Height; row++ {
 		for col := 0; col < b.tilemap.Width; col++ {
@@ -72,7 +79,7 @@ func (b BoardMap) GetAllTiles() []BoardMapTile {
 					panic(err)
 				}
 
-				tiles = append(tiles, BoardMapTile{
+				tiles = append(tiles, BoardMapEntity{
 					Type:        tstile.Type,
 					Spritesheet: spriteSheet,
 					SpriteName:  fmt.Sprint(tile.ID),
@@ -88,8 +95,8 @@ func (b BoardMap) GetAllTiles() []BoardMapTile {
 	return tiles
 }
 
-func (b BoardMap) GetAllObjects() []BoardMapTile {
-	objs := []BoardMapTile{}
+func (b BoardMap) getAllObjects() []BoardMapEntity {
+	objs := []BoardMapEntity{}
 
 	for _, obj := range b.tilemap.ObjectGroups[0].Objects {
 		fmt.Println("ID:", obj.ID)
@@ -102,16 +109,7 @@ func (b BoardMap) GetAllObjects() []BoardMapTile {
 
 		spriteId := obj.GID - spritesheetGID
 
-		fmt.Println("Spritesheet GID:", spritesheetGID)
-		fmt.Println("Sprite ID:", spriteId)
-		fmt.Println("Spritesheet:", spritesheet)
-		fmt.Println("Spritesheet:", ss.Sprites["CHAR1"]["0"])
-		fmt.Println("Class:", obj.Class)
-		fmt.Println("Type:", ss.IdMap[spriteId].EntityName)
-		fmt.Println("X:", obj.X)
-		fmt.Println("Y:", obj.Y)
-
-		objs = append(objs, BoardMapTile{
+		objs = append(objs, BoardMapEntity{
 			Type:        ss.IdMap[spriteId].EntityName,
 			Spritesheet: spritesheet,
 			SpriteName:  ss.IdMap[spriteId].TileName,
@@ -135,23 +133,3 @@ func (b BoardMap) getSpritesheetGID(gid int) uint32 {
 
 	return uint32(b.gidRanges[len(b.gidRanges)-1])
 }
-
-// func (b BoardMap) getSpritesheetFromGID(gid int) (*Spritesheet, uint32) {
-// 	var spritesheet *Spritesheet = nil
-
-// 	for _, firstGid := range b.gidRanges {
-// 		//fmt.Println("WOW:", firstGid)
-// 		if gid > firstGid {
-// 			continue
-// 		} else {
-// 			fmt.Println("WOW", firstGid)
-// 			spritesheet = b.gidToSpritesheetMap[uint32(firstGid)]
-// 			break
-// 		}
-// 	}
-
-// 	return spritesheet
-// }
-
-// 1 181
-// 196

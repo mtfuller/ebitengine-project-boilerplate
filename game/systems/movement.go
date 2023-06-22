@@ -13,6 +13,10 @@ type Movement struct {
 	collisionObjects map[*ecs.Entity]*resolv.Object
 }
 
+func (m Movement) GetName() string {
+	return "System::Movement"
+}
+
 func (m *Movement) AddEntity(e *ecs.Entity) {
 	if m.Entities == nil {
 		m.Entities = make(map[*ecs.Entity]struct{})

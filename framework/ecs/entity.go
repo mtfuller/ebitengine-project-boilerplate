@@ -1,7 +1,5 @@
 package ecs
 
-//"fmt"
-
 type Entity struct {
 	components map[string]interface{}
 }
