@@ -27,13 +27,7 @@ func (r Render) GetName() string {
 	return "System::Render"
 }
 
-func (b *Render) AddEntity(e *ecs.Entity) {
-	if b.Entities == nil {
-		b.Entities = make(map[*ecs.Entity]struct{})
-	}
-
-	b.Entities[e] = struct{}{}
-
+func (b *Render) HandleEntityCreated(e *ecs.Entity) {
 	component := e.GetComponent("render")
 	render, _ := component.(*components.Render)
 

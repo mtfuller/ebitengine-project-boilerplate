@@ -99,9 +99,6 @@ func (b BoardMap) getAllObjects() []BoardMapEntity {
 	objs := []BoardMapEntity{}
 
 	for _, obj := range b.tilemap.ObjectGroups[0].Objects {
-		fmt.Println("ID:", obj.ID)
-		fmt.Println("GID:", obj.GID)
-
 		spritesheetGID := b.getSpritesheetGID(int(obj.GID))
 		spritesheet := b.gidToSpritesheetMap[uint32(spritesheetGID)]
 

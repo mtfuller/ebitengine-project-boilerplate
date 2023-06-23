@@ -15,34 +15,30 @@ func (i Input) GetName() string {
 	return "System::Input"
 }
 
-func (i Input) Update() {
-	for ptr, _ := range i.Entities {
-		e := *ptr
+func (i Input) Update(e *ecs.Entity) {
+	component := e.GetComponent("input")
+	input, ok := component.(*components.Input)
+	if !ok {
+		return
+	}
 
-		component := e.GetComponent("input")
-		input, ok := component.(*components.Input)
-		if !ok {
-			continue
+	component = e.GetComponent("velocity")
+	velocity, ok := component.(*components.Velocity)
+	if !ok {
+		return
+	}
+
+	if input.Enabled {
+		if inpututil.IsKeyJustPressed(ebiten.KeyUp) && (-0.01 < velocity.VY && velocity.VY < 0.01) {
+			velocity.VY -= 5
 		}
 
-		component = e.GetComponent("velocity")
-		velocity, ok := component.(*components.Velocity)
-		if !ok {
-			continue
-		}
-
-		if input.Enabled {
-			if inpututil.IsKeyJustPressed(ebiten.KeyUp) && (-0.01 < velocity.VY && velocity.VY < 0.01) {
-				velocity.VY -= 5
-			}
-
-			if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-				velocity.VX = -1
-			} else if ebiten.IsKeyPressed(ebiten.KeyRight) {
-				velocity.VX = 1
-			} else {
-				velocity.VX = 0
-			}
+		if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+			velocity.VX = -1
+		} else if ebiten.IsKeyPressed(ebiten.KeyRight) {
+			velocity.VX = 1
+		} else {
+			velocity.VX = 0
 		}
 	}
 }

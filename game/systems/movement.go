@@ -1,7 +1,6 @@
 package systems
 
 import (
-	//"fmt"
 	"github.com/solarlune/resolv"
 	"github.com/yourname/yourgame/framework/ecs"
 	"github.com/yourname/yourgame/game/components"
@@ -17,10 +16,7 @@ func (m Movement) GetName() string {
 	return "System::Movement"
 }
 
-func (m *Movement) AddEntity(e *ecs.Entity) {
-	if m.Entities == nil {
-		m.Entities = make(map[*ecs.Entity]struct{})
-	}
+func (m *Movement) HandleEntityCreated(e *ecs.Entity) {
 
 	if m.collisionSpace == nil {
 		m.collisionSpace = resolv.NewSpace(640, 480, 2, 2)
@@ -29,8 +25,6 @@ func (m *Movement) AddEntity(e *ecs.Entity) {
 	if m.collisionObjects == nil {
 		m.collisionObjects = make(map[*ecs.Entity]*resolv.Object)
 	}
-
-	m.Entities[e] = struct{}{}
 
 	component := e.GetComponent("position")
 	position, _ := component.(*components.Position)
@@ -55,41 +49,37 @@ func (m *Movement) AddEntity(e *ecs.Entity) {
 	}
 }
 
-func (m Movement) Update() {
-	for ptr, _ := range m.Entities {
-		e := *ptr
-
-		component := e.GetComponent("position")
-		position, ok := component.(*components.Position)
-		if !ok {
-			continue
-		}
-
-		component = e.GetComponent("velocity")
-		velocity, ok := component.(*components.Velocity)
-		if !ok {
-			continue
-		}
-
-		component = e.GetComponent("gravity")
-		gravity, ok := component.(*components.Gravity)
-		if ok && gravity.Enabled {
-			velocity.VY += 0.1
-		}
-
-		if collision := m.collisionObjects[ptr].Check(velocity.VX, 0); collision != nil {
-			velocity.VX = collision.ContactWithObject(collision.Objects[0]).X()
-		}
-
-		if collision := m.collisionObjects[ptr].Check(0, velocity.VY); collision != nil {
-			velocity.VY = collision.ContactWithObject(collision.Objects[0]).Y()
-		}
-
-		m.collisionObjects[ptr].X += velocity.VX
-		m.collisionObjects[ptr].Y += velocity.VY
-		m.collisionObjects[ptr].Update()
-
-		position.X += velocity.VX
-		position.Y += velocity.VY
+func (m Movement) Update(e *ecs.Entity) {
+	component := e.GetComponent("position")
+	position, ok := component.(*components.Position)
+	if !ok {
+		return
 	}
+
+	component = e.GetComponent("velocity")
+	velocity, ok := component.(*components.Velocity)
+	if !ok {
+		return
+	}
+
+	component = e.GetComponent("gravity")
+	gravity, ok := component.(*components.Gravity)
+	if ok && gravity.Enabled {
+		velocity.VY += 0.1
+	}
+
+	if collision := m.collisionObjects[e].Check(velocity.VX, 0); collision != nil {
+		velocity.VX = collision.ContactWithObject(collision.Objects[0]).X()
+	}
+
+	if collision := m.collisionObjects[e].Check(0, velocity.VY); collision != nil {
+		velocity.VY = collision.ContactWithObject(collision.Objects[0]).Y()
+	}
+
+	m.collisionObjects[e].X += velocity.VX
+	m.collisionObjects[e].Y += velocity.VY
+	m.collisionObjects[e].Update()
+
+	position.X += velocity.VX
+	position.Y += velocity.VY
 }

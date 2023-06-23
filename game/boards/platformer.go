@@ -8,18 +8,27 @@ import (
 )
 
 func NewPlatformer() ecs.Board {
-	b := ecs.Board{}
-
 	renderSystem := systems.NewRender()
 	movementSystem := &systems.Movement{}
 	inputSystem := &systems.Input{}
+
+	b := ecs.Board{
+
+		OnEntityCreated: func(e *ecs.Entity) {
+			movementSystem.HandleEntityCreated(e)
+			renderSystem.HandleEntityCreated(e)
+		},
+
+		OnEntityDestroyed: func(e *ecs.Entity) {
+
+		},
+	}
 
 	b.SetRenderer(renderSystem)
 	b.AddSystem(movementSystem)
 	b.AddSystem(inputSystem)
 
 	const tilemapFilepath = "assets/tilemaps/platformer.tmx"
-
 	boardmap, err := framework.LoadBoardMapFromTilemap(tilemapFilepath)
 	if err != nil {
 		panic(err)
@@ -31,13 +40,11 @@ func NewPlatformer() ecs.Board {
 		switch boardEntity.Type {
 		case "WALL":
 			e := entities.NewWall(boardEntity)
-			movementSystem.AddEntity(&e)
-			renderSystem.AddEntity(&e)
+			b.AddEntityToSystems(&e, movementSystem.GetName(), renderSystem.GetName())
 		case "CHAR1":
 			e := entities.NewCharacter(boardEntity)
-			movementSystem.AddEntity(&e)
-			inputSystem.AddEntity(&e)
-			renderSystem.AddEntity(&e)
+			b.AddEntityToSystems(&e, inputSystem.GetName(), movementSystem.GetName(),
+				renderSystem.GetName())
 		default:
 		}
 	}
