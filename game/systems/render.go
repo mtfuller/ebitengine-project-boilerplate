@@ -34,6 +34,23 @@ func (b *Render) HandleEntityCreated(e *ecs.Entity) {
 	b.layers[render.Z] = append(b.layers[render.Z], e)
 }
 
+func (b *Render) HandleEntityDestoryed(e *ecs.Entity) {
+	component := e.GetComponent("render")
+	render, _ := component.(*components.Render)
+
+	atIndex := -1
+	for i, elem := range b.layers[render.Z] {
+		if elem == e {
+			atIndex = i
+			break
+		}
+	}
+
+	if atIndex >= 0 {
+		b.layers[render.Z] = append(b.layers[render.Z][:atIndex], b.layers[render.Z][atIndex+1:]...)
+	}
+}
+
 func (r Render) Render(screen *ebiten.Image) {
 	r.viewport.Fill(color.RGBA{0x80, 0xa0, 0xc0, 0xff})
 

@@ -1,6 +1,8 @@
 package boards
 
 import (
+	"fmt"
+
 	"github.com/yourname/yourgame/framework"
 	"github.com/yourname/yourgame/framework/ecs"
 	"github.com/yourname/yourgame/game/entities"
@@ -20,9 +22,18 @@ func NewPlatformer() ecs.Board {
 		},
 
 		OnEntityDestroyed: func(e *ecs.Entity) {
-
+			movementSystem.HandleEntityDestoryed(e)
+			renderSystem.HandleEntityDestoryed(e)
 		},
 	}
+
+	movementSystem.WhenEntityTouchesAnother("CHAR", "COIN", func(first uint64, second uint64) {
+		fmt.Println("SCORE!")
+
+		coin := b.GetEntity(second)
+
+		b.RemoveEntity(coin)
+	})
 
 	b.SetRenderer(renderSystem)
 	b.AddSystem(movementSystem)
@@ -40,6 +51,9 @@ func NewPlatformer() ecs.Board {
 		switch boardEntity.Type {
 		case "WALL":
 			e := entities.NewWall(boardEntity)
+			b.AddEntityToSystems(&e, movementSystem.GetName(), renderSystem.GetName())
+		case "COIN":
+			e := entities.NewCoin(boardEntity)
 			b.AddEntityToSystems(&e, movementSystem.GetName(), renderSystem.GetName())
 		case "CHAR1":
 			e := entities.NewCharacter(boardEntity)

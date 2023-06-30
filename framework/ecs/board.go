@@ -5,11 +5,12 @@ import (
 )
 
 type BoardEntity struct {
+	ecsEntity         *Entity
 	subscribedSystems []string
 }
 
 type Board struct {
-	entities          map[*Entity]BoardEntity
+	entities          map[uint64]BoardEntity
 	systems           map[string]ISystem
 	renderer          IRenderableSystem
 	OnEntityCreated   func(*Entity)
@@ -17,14 +18,31 @@ type Board struct {
 }
 
 func (b *Board) AddEntity(e *Entity) {
-	b.entities[e] = BoardEntity{subscribedSystems: []string{}}
+	b.entities[e.id] = BoardEntity{
+		ecsEntity:         e,
+		subscribedSystems: []string{},
+	}
+}
+
+func (b Board) GetEntity(id uint64) *Entity {
+	return b.entities[id].ecsEntity
+}
+
+func (b *Board) RemoveEntity(e *Entity) {
+	b.OnEntityDestroyed(e)
+
+	delete(b.entities, e.id)
 }
 
 func (b *Board) AddEntityToSystems(e *Entity, systemNames ...string) {
 	if b.entities == nil {
-		b.entities = make(map[*Entity]BoardEntity)
+		b.entities = make(map[uint64]BoardEntity)
 	}
-	b.entities[e] = BoardEntity{subscribedSystems: systemNames}
+
+	b.entities[e.id] = BoardEntity{
+		ecsEntity:         e,
+		subscribedSystems: systemNames,
+	}
 
 	b.OnEntityCreated(e)
 }
@@ -42,11 +60,11 @@ func (b *Board) SetRenderer(r IRenderableSystem) {
 }
 
 func (b *Board) Update() error {
-	for e, boardEntity := range b.entities {
+	for _, boardEntity := range b.entities {
 		for _, systemName := range boardEntity.subscribedSystems {
 			system, ok := b.systems[systemName]
 			if ok {
-				system.Update(e)
+				system.Update(boardEntity.ecsEntity)
 			}
 		}
 	}

@@ -1,11 +1,31 @@
 package ecs
 
+var globalEntityIdCounter uint64 = 0
+
 type Entity struct {
+	id         uint64
+	name       string
 	components map[string]interface{}
 }
 
-func NewEntity() Entity {
-	return Entity{components: make(map[string]interface{})}
+func NewEntity(name string) Entity {
+	e := Entity{
+		id:         globalEntityIdCounter,
+		name:       name,
+		components: make(map[string]interface{}),
+	}
+
+	globalEntityIdCounter++
+
+	return e
+}
+
+func (e Entity) GetID() uint64 {
+	return e.id
+}
+
+func (e Entity) GetName() string {
+	return e.name
 }
 
 func (e Entity) GetComponent(name string) interface{} {

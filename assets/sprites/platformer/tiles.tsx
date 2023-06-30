@@ -313,7 +313,7 @@
  <tile id="148" type="WALL"/>
  <tile id="149" type="WALL"/>
  <tile id="150" type="WALL"/>
- <tile id="151" type="WALL">
+ <tile id="151" type="COIN">
   <properties>
    <property name="componentName:prop" value="hello"/>
   </properties>

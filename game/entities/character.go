@@ -7,7 +7,7 @@ import (
 )
 
 func NewCharacter(boardEntity framework.BoardMapEntity) ecs.Entity {
-	myEntity := ecs.NewEntity()
+	myEntity := ecs.NewEntity("CHAR")
 
 	myEntity.SetComponent(&components.Input{
 		Enabled: true,
@@ -31,6 +31,7 @@ func NewCharacter(boardEntity framework.BoardMapEntity) ecs.Entity {
 
 	myEntity.SetComponent(&components.Collision{
 		Enabled: true,
+		Solid:   true,
 	})
 
 	myEntity.SetComponent(&components.Velocity{
