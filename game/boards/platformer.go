@@ -2,7 +2,10 @@ package boards
 
 import (
 	"fmt"
+	"os"
 
+	"github.com/hajimehoshi/ebiten/v2/audio"
+	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
 	"github.com/yourname/yourgame/framework"
 	"github.com/yourname/yourgame/framework/ecs"
 	"github.com/yourname/yourgame/game/entities"
@@ -13,6 +16,7 @@ func NewPlatformer() ecs.Board {
 	renderSystem := systems.NewRender()
 	movementSystem := &systems.Movement{}
 	inputSystem := &systems.Input{}
+	audio.NewContext(44100)
 
 	b := ecs.Board{
 
@@ -30,9 +34,53 @@ func NewPlatformer() ecs.Board {
 	movementSystem.WhenEntityTouchesAnother("CHAR", "COIN", func(first uint64, second uint64) {
 		fmt.Println("SCORE!")
 
+		ctx := audio.CurrentContext()
+
+		f, err := os.Open("./assets/audio/coin.ogg")
+		if err != nil {
+			fmt.Println("ERR:", err)
+			panic("Can't open file")
+		}
+
+		s, err := vorbis.Decode(ctx, f)
+
+		m, err := audio.NewPlayer(ctx, s)
+		if err != nil {
+			fmt.Println("ERR:", err)
+			panic("Can't open file")
+		}
+
+		m.Play()
+
 		coin := b.GetEntity(second)
 
 		b.RemoveEntity(coin)
+	})
+
+	movementSystem.WhenEntityTouchesAnother("CHAR", "SPIKE", func(first uint64, second uint64) {
+		fmt.Println("GAME OVER!")
+
+		ctx := audio.CurrentContext()
+
+		f, err := os.Open("./assets/audio/hit.ogg")
+		if err != nil {
+			fmt.Println("ERR:", err)
+			panic("Can't open file")
+		}
+
+		s, err := vorbis.Decode(ctx, f)
+
+		m, err := audio.NewPlayer(ctx, s)
+		if err != nil {
+			fmt.Println("ERR:", err)
+			panic("Can't open file")
+		}
+
+		m.Play()
+
+		player := b.GetEntity(first)
+
+		b.RemoveEntity(player)
 	})
 
 	b.SetRenderer(renderSystem)
@@ -51,6 +99,9 @@ func NewPlatformer() ecs.Board {
 		switch boardEntity.Type {
 		case "WALL":
 			e := entities.NewWall(boardEntity)
+			b.AddEntityToSystems(&e, movementSystem.GetName(), renderSystem.GetName())
+		case "SPIKE":
+			e := entities.NewSpike(boardEntity)
 			b.AddEntityToSystems(&e, movementSystem.GetName(), renderSystem.GetName())
 		case "COIN":
 			e := entities.NewCoin(boardEntity)

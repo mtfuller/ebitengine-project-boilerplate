@@ -156,7 +156,7 @@
  <tile id="65" type="WALL"/>
  <tile id="66" type="WALL"/>
  <tile id="67" type="WALL"/>
- <tile id="68" type="WALL"/>
+ <tile id="68" type="SPIKE"/>
  <tile id="69" type="WALL"/>
  <tile id="70" type="WALL"/>
  <tile id="71" type="WALL"/>

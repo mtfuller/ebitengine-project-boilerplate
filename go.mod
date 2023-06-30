@@ -6,7 +6,10 @@ require (
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20220320163800-277f93cfa958 // indirect
 	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/hajimehoshi/ebiten/v2 v2.3.5 // indirect
+	github.com/hajimehoshi/oto/v2 v2.1.0 // indirect
 	github.com/jezek/xgb v1.0.0 // indirect
+	github.com/jfreymuth/oggvorbis v1.0.3 // indirect
+	github.com/jfreymuth/vorbis v1.0.2 // indirect
 	github.com/kvartborg/vector v0.0.0-20200419093813-2cba0cabb4f0 // indirect
 	github.com/lafriks/go-tiled v0.12.0 // indirect
 	github.com/solarlune/resolv v0.5.1 // indirect

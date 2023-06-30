@@ -123,6 +123,7 @@ func (m Movement) Update(e *ecs.Entity) {
 					_, hasHandler := m.collisionEvents[e.GetName()][entityName]
 					if hasHandler {
 						m.collisionEvents[e.GetName()][entityName](e.GetID(), entityID)
+						return
 					}
 				}
 			}
@@ -151,6 +152,7 @@ func (m Movement) Update(e *ecs.Entity) {
 					_, hasHandler := m.collisionEvents[e.GetName()][entityName]
 					if hasHandler {
 						m.collisionEvents[e.GetName()][entityName](e.GetID(), entityID)
+						return
 					}
 				}
 			}
