@@ -45,7 +45,7 @@ func NewEnemy(boardEntity framework.BoardMapEntity) ecs.Entity {
 
 	myEntity.SetComponent(&components.Render{
 		Spritesheet:  *boardEntity.Spritesheet,
-		EntityName:   "ENEMY1",
+		EntityName:   boardEntity.Type,
 		SpriteName:   boardEntity.SpriteName,
 		CurrentFrame: 0,
 		FrameCount:   0,
