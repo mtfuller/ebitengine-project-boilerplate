@@ -26,3 +26,6 @@ go.work
 # Tiled
 *.tiled-project
 *.tiled-session
+
+# Build output
+yourgame

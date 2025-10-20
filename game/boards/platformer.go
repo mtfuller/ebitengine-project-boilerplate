@@ -16,6 +16,7 @@ func NewPlatformer() ecs.Board {
 	renderSystem := systems.NewRender()
 	movementSystem := &systems.Movement{}
 	inputSystem := &systems.Input{}
+	aiSystem := &systems.AI{}
 	audio.NewContext(44100)
 
 	b := ecs.Board{
@@ -83,9 +84,36 @@ func NewPlatformer() ecs.Board {
 		b.RemoveEntity(player)
 	})
 
+	movementSystem.WhenEntityTouchesAnother("CHAR", "ENEMY", func(first uint64, second uint64) {
+		fmt.Println("HIT BY ENEMY!")
+
+		ctx := audio.CurrentContext()
+
+		f, err := os.Open("./assets/audio/hit.ogg")
+		if err != nil {
+			fmt.Println("ERR:", err)
+			panic("Can't open file")
+		}
+
+		s, err := vorbis.Decode(ctx, f)
+
+		m, err := audio.NewPlayer(ctx, s)
+		if err != nil {
+			fmt.Println("ERR:", err)
+			panic("Can't open file")
+		}
+
+		m.Play()
+
+		player := b.GetEntity(first)
+
+		b.RemoveEntity(player)
+	})
+
 	b.SetRenderer(renderSystem)
 	b.AddSystem(movementSystem)
 	b.AddSystem(inputSystem)
+	b.AddSystem(aiSystem)
 
 	const tilemapFilepath = "assets/tilemaps/platformer.tmx"
 	boardmap, err := framework.LoadBoardMapFromTilemap(tilemapFilepath)
@@ -109,6 +137,10 @@ func NewPlatformer() ecs.Board {
 		case "CHAR1":
 			e := entities.NewCharacter(boardEntity)
 			b.AddEntityToSystems(&e, inputSystem.GetName(), movementSystem.GetName(),
+				renderSystem.GetName())
+		case "ENEMY1", "ENEMY2", "ENEMY3", "ENEMY4", "ENEMY5", "ENEMY6":
+			e := entities.NewEnemy(boardEntity)
+			b.AddEntityToSystems(&e, aiSystem.GetName(), movementSystem.GetName(),
 				renderSystem.GetName())
 		default:
 		}
